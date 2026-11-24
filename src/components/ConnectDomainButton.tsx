@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { customdomain } from 'customdomain-js'
 
 const applicationId = 'app_411b1e8063492ce9eab1a3d5a7bcafec'
@@ -8,26 +8,25 @@ type TokenResponse = {
   token: string
 }
 
-function getCustomerRef() {
-  const key = 'defai-customdomain-customer-ref'
-  const existing = window.localStorage.getItem(key)
-  if (existing) return existing
-
-  const generated = `customer_${crypto.randomUUID()}`
-  window.localStorage.setItem(key, generated)
-  return generated
+function getSessionToken() {
+  return window.sessionStorage.getItem('defai-auth-token')
 }
 
 export function ConnectDomainButton() {
   const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [message, setMessage] = useState('')
-  const customerRef = useMemo(() => getCustomerRef(), [])
 
   async function fetchToken(): Promise<TokenResponse> {
+    const sessionToken = getSessionToken()
+    if (!sessionToken) throw new Error('Sign in before connecting a domain.')
+
     const response = await fetch('/api/customdomain-token', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ end_user_ref: customerRef }),
+      headers: {
+        Authorization: `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
     })
 
     if (!response.ok) throw new Error('The domain connection service is not configured yet.')
@@ -44,7 +43,6 @@ export function ConnectDomainButton() {
         applicationId: application_id || applicationId,
         token,
         getToken: async () => (await fetchToken()).token,
-        endUserRef: customerRef,
         onSuccess: ({ domain }: { domain: string }) => {
           setState('idle')
           setMessage(`${domain} is live.`)

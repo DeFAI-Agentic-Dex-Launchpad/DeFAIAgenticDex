@@ -58,6 +58,9 @@ For a Vercel deployment, add this environment variable in the project settings b
 
 ```text
 CUSTOMDOMAIN_API_KEY=<your server-side CustomDomain API key>
+DEFAI_AUTH_JWT_SECRET=<server-only HS256 session signing secret>
 ```
 
-Do not commit the key or place it in client-side Vite variables such as `VITE_*`. The current frontend is static-host compatible, but the CustomDomain token route must run on a serverless host such as Vercel. The route also expects your production app to add its own authentication check before minting tokens for real customers; the demo UI uses a stable browser customer reference until the product’s account system is connected.
+The token route requires `Authorization: Bearer <session-jwt>`. It verifies an `HS256` signature with `DEFAI_AUTH_JWT_SECRET`, requires a non-empty `sub` claim, rejects expired tokens, and uses the verified `sub` as CustomDomain’s `end_user_ref`. Optional `DEFAI_AUTH_JWT_ISSUER` and `DEFAI_AUTH_JWT_AUDIENCE` variables can enforce issuer and audience claims.
+
+The frontend reads the signed session JWT from `sessionStorage` under `defai-auth-token`; the application’s real sign-in flow must place it there after authentication. Do not commit any secret or place either secret in client-side Vite variables such as `VITE_*`. The current frontend is static-host compatible, but the CustomDomain token route must run on a serverless host such as Vercel.
