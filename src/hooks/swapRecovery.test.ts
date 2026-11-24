@@ -45,6 +45,19 @@ describe('normalizeSwapError', () => {
     })
   })
 
+  it('classifies HTTP 429 rate limiting as safely retryable', () => {
+    const result = normalizeSwapError(
+      'base',
+      '429 Too Many Requests: RPC rate limit exceeded',
+    )
+
+    expect(result).toMatchObject({
+      code: 'RPC_OR_NETWORK_ERROR',
+      recoverable: true,
+      action: 'retry_polling',
+    })
+  })
+
   it('marks unknown onchain failures for inspection instead of replay', () => {
     const result = normalizeSwapError('base', { reason: 'execution reverted' })
 

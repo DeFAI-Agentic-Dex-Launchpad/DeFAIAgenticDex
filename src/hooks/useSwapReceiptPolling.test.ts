@@ -206,6 +206,69 @@ describe('useSwapReceiptPolling', () => {
     expect(client.getTransactionReceipt).toHaveBeenCalled()
   })
 
+  it('returns a retryable timeout when Solana RPC requests repeatedly fail', async () => {
+    const connection = {
+      getSignatureStatuses: vi
+        .fn()
+        .mockRejectedValue(new Error('network timeout while fetching signature status')),
+      getBlockHeight: vi.fn(),
+    }
+    const { result } = renderHook(() =>
+      useSwapReceiptPolling(
+        { solanaConnection: connection as never },
+        { pollIntervalMs: 1, timeoutMs: 12 },
+      ),
+    )
+
+    let receipt
+    await act(async () => {
+      receipt = await result.current.start({
+        chain: 'solana',
+        signature: '0x-network-timeout',
+      })
+    })
+
+    expect(receipt).toMatchObject({
+      status: 'timed_out',
+      error: {
+        code: 'RPC_OR_NETWORK_ERROR',
+        action: 'retry_polling',
+      },
+    })
+    expect(connection.getSignatureStatuses.mock.calls.length).toBeGreaterThan(1)
+  })
+
+  it('returns a retryable timeout when Base RPC repeatedly rate-limits receipt checks', async () => {
+    const client = {
+      getTransactionReceipt: vi
+        .fn()
+        .mockRejectedValue(new Error('429 Too Many Requests: RPC rate limit exceeded')),
+    }
+    const { result } = renderHook(() =>
+      useSwapReceiptPolling(
+        { basePublicClient: client as never },
+        { pollIntervalMs: 1, timeoutMs: 12 },
+      ),
+    )
+
+    let receipt
+    await act(async () => {
+      receipt = await result.current.start({
+        chain: 'base',
+        signature: '0x-rate-limited',
+      })
+    })
+
+    expect(receipt).toMatchObject({
+      status: 'timed_out',
+      error: {
+        code: 'RPC_OR_NETWORK_ERROR',
+        action: 'retry_polling',
+      },
+    })
+    expect(client.getTransactionReceipt.mock.calls.length).toBeGreaterThan(1)
+  })
+
   it('stops polling without leaving the hook in a confirming state', async () => {
     const connection = solanaConnection([
       { confirmationStatus: null, confirmations: null, slot: null, err: null },

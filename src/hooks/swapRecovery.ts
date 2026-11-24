@@ -100,7 +100,10 @@ export function normalizeSwapError(
     normalized.includes('timed out') ||
     normalized.includes('network') ||
     normalized.includes('rpc') ||
-    normalized.includes('fetch')
+    normalized.includes('fetch') ||
+    normalized.includes('rate limit') ||
+    normalized.includes('too many requests') ||
+    normalized.includes('429')
   ) {
     return {
       code: 'RPC_OR_NETWORK_ERROR',

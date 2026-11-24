@@ -174,7 +174,10 @@ export function useSwapReceiptPolling(
           const notMined =
             message.includes('not found') ||
             message.includes('unknown transaction') ||
-            message.includes('pending')
+            message.includes('pending') ||
+            message.includes('rate limit') ||
+            message.includes('too many requests') ||
+            message.includes('429')
 
           if (!notMined) {
             return {
