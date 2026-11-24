@@ -27,10 +27,12 @@ A live order may only become possible after the track is explicitly promoted to 
 
 ## Solana Memecoin Sniper Bot
 
-### Phase 1: detection and safety filters
+### Phase 1: detection and safety filters — started
 
-- Add reconnecting event ingestion with duplicate-event suppression.
-- Validate mint authority, freeze authority, liquidity depth, holder concentration, and token age.
+- The initial provider-agnostic log normalizer is implemented in `src/bots/solanaTokenIngestion.ts`. It accepts decoded adapter metadata or deterministic log hints, normalizes supported token/liquidity events, and deduplicates signatures.
+- The initial fail-closed filter set is implemented in `src/bots/solanaRiskFilters.ts`. It validates mint/freeze authorities, liquidity, liquidity locking, holder concentration, token age, denylisting, and simulation status.
+- Add a production provider adapter with reconnecting websocket/stream ingestion and durable cursor/checkpoint storage.
+- Validate mint authority, freeze authority, liquidity depth, holder concentration, and token age from trusted RPC/indexer data.
 - Add configurable allowlists, denylists, maximum position size, maximum slippage, and priority-fee ceilings.
 - Produce a candidate report without submitting a transaction.
 
