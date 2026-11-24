@@ -71,6 +71,7 @@ export type PreparedSniperOrder = {
   orderId: string
   mode: SniperExecutionMode
   walletPublicKey: string
+  inputAmountUsd: number
   inputMint: string
   outputMint: string
   inputAmount: bigint
@@ -177,6 +178,7 @@ export class SolanaSniperExecutionPipeline {
         orderId: request.orderId,
         mode: policy.mode,
         walletPublicKey: request.walletPublicKey,
+        inputAmountUsd: request.inputAmountUsd,
         inputMint: quote.inputMint,
         outputMint: quote.outputMint,
         inputAmount: quote.inputAmount,

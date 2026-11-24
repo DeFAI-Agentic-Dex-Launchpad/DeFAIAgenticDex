@@ -39,8 +39,10 @@ A live order may only become possible after the track is explicitly promoted to 
 ### Phase 2: paper execution
 
 - The guarded builder and paper-only pipeline are implemented in `src/bots/solanaSniperExecution.ts`. It requires an approved risk decision, validates the output mint, quote age, order size, slippage, price impact, priority fee, and Jupiter transaction payload, then returns a wallet handoff/paper-ready object without signing or submitting.
+- The wallet approval state machine is implemented in `src/bots/solanaWalletApproval.ts`. It binds approval to the intended wallet and order, expires requests, supports rejection/revocation, and never handles private keys.
+- The deterministic paper replay engine is implemented in `src/bots/solanaPaperReplay.ts`. It replays prepared orders against timestamped market ticks, accounts for fees/slippage, and records fills or rejection reasons without RPC or wallet side effects.
 - Request Jupiter quotes and retain quote expiry metadata.
-- Simulate fills against recorded liquidity and price fixtures.
+- Add richer fill simulation against recorded liquidity and price fixtures.
 - Reuse receipt recovery states to model confirmation, expiry, dropped, and failed transactions.
 - Add replay tests for fast-moving and illiquid markets.
 
