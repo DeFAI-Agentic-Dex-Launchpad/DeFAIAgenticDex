@@ -49,3 +49,15 @@ The production build is generated in `dist/` by Vite. The project is suitable fo
 ## Status
 
 This repository is an active DeFAI/DeFi frontend workbench. The bot tracks are currently disabled scaffolds: they do not submit live orders, and their tags do not imply production trading capability.
+
+## Customer domain connection
+
+The app includes a **Connect domain** control backed by CustomDomain™. The browser requests a short-lived widget token from `POST /api/customdomain-token`; the server route reads `CUSTOMDOMAIN_API_KEY` from the deployment environment and never exposes that key to the browser or repository.
+
+For a Vercel deployment, add this environment variable in the project settings before using the button:
+
+```text
+CUSTOMDOMAIN_API_KEY=<your server-side CustomDomain API key>
+```
+
+Do not commit the key or place it in client-side Vite variables such as `VITE_*`. The current frontend is static-host compatible, but the CustomDomain token route must run on a serverless host such as Vercel. The route also expects your production app to add its own authentication check before minting tokens for real customers; the demo UI uses a stable browser customer reference until the product’s account system is connected.
