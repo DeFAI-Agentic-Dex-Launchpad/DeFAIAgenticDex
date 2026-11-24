@@ -38,6 +38,7 @@ A live order may only become possible after the track is explicitly promoted to 
 
 ### Phase 2: paper execution
 
+- The guarded builder and paper-only pipeline are implemented in `src/bots/solanaSniperExecution.ts`. It requires an approved risk decision, validates the output mint, quote age, order size, slippage, price impact, priority fee, and Jupiter transaction payload, then returns a wallet handoff/paper-ready object without signing or submitting.
 - Request Jupiter quotes and retain quote expiry metadata.
 - Simulate fills against recorded liquidity and price fixtures.
 - Reuse receipt recovery states to model confirmation, expiry, dropped, and failed transactions.

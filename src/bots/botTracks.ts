@@ -32,7 +32,7 @@ export const BOT_TRACKS: readonly BotTrack[] = [
     nextMilestones: [
       'Add websocket/stream ingestion with reconnect and deduplication.',
       'Add token, liquidity, mint-authority, freeze-authority, and holder-risk filters.',
-      'Add Jupiter quote simulation and paper-trading replay fixtures.',
+      'Add a bounded Jupiter transaction builder and paper-only execution pipeline.',
       'Add bounded order sizing, slippage, priority-fee, and kill-switch controls.',
     ],
     safetyRequirements: [
