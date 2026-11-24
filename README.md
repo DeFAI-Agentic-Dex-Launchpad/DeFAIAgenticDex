@@ -32,8 +32,10 @@ The production build is generated in `dist/` by Vite. The project is suitable fo
 
 - `src/main.tsx` — application entry point and primary UI flow.
 - `src/hooks/` — transaction receipt polling, swap recovery, and related tests.
+- `src/bots/` — safety-first bot track registry and tests for the Solana sniper and multi-chain trading bot.
 - `src/components/` — reusable swap and receipt-status UI components.
 - `public/` — static assets and route metadata.
+- `docs/bot-development-roadmap.md` — audit, tag convention, and staged implementation plan for both bot tracks.
 - `TODO.md` — tracked follow-up work for the launchpad.
 
 ## Contribution workflow
@@ -46,4 +48,4 @@ The production build is generated in `dist/` by Vite. The project is suitable fo
 
 ## Status
 
-This repository is an active DeFAI/DeFi frontend workbench. Features and integrations may evolve as the launchpad workflow is expanded.
+This repository is an active DeFAI/DeFi frontend workbench. The bot tracks are currently disabled scaffolds: they do not submit live orders, and their tags do not imply production trading capability.
